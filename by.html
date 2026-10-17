@@ -1,0 +1,1345 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday My Love!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rose: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            300: '#fca5a5',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            800: '#9f1239',
+                        },
+                        amber: {
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                        }
+                    },
+                    fontFamily: {
+                        cursive: ['"Great Vibes"', 'cursive'],
+                        dancing: ['"Dancing Script"', 'cursive'],
+                        sans: ['"Poppins"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f051d 0%, #2a0826 35%, #1a0b2e 70%, #0d0414 100%);
+            color: #fce7f3;
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Glassmorphism effects */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        /* 3D Card Flip */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Floating Hearts Animation Background */
+        .heart-particle {
+            position: fixed;
+            bottom: -50px;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp 8s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 0;
+            }
+            20% { opacity: 0.8; }
+            100% {
+                transform: translateY(-115vh) rotate(360deg) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* Candle Flame and Smoke Effects */
+        .flame {
+            width: 14px;
+            height: 28px;
+            background: linear-gradient(to top, #ff4500, #ff8c00, #ffd700, #ffffff);
+            border-radius: 50% 50% 35% 35%;
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.9));
+            animation: flicker 0.12s infinite alternate ease-in-out;
+            transform-origin: center bottom;
+        }
+
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+            100% { transform: translateX(-50%) scale(1.1, 0.95) rotate(2deg); }
+        }
+
+        .smoke {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: rgba(200, 200, 200, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .smoke.active {
+            animation: riseSmoke 1.8s ease-out forwards;
+        }
+
+        @keyframes riseSmoke {
+            0% { opacity: 0.8; transform: translate(-50%, 0) scale(1); filter: blur(2px); }
+            50% { opacity: 0.5; filter: blur(6px); }
+            100% { opacity: 0; transform: translate(-50%, -60px) scale(3.5); filter: blur(10px); }
+        }
+
+        /* Cake SVG & Cutting Animation Styling */
+        .cake-shadow {
+            filter: drop-shadow(0 15px 25px rgba(225, 29, 72, 0.3));
+        }
+
+        .cake-half-left, .cake-half-right {
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .cake-cut .cake-half-left {
+            transform: translateX(-12px) rotate(-1.5deg);
+        }
+
+        .cake-cut .cake-half-right {
+            transform: translateX(12px) rotate(1.5deg);
+        }
+
+        .knife {
+            position: absolute;
+            top: -40px;
+            right: 20%;
+            font-size: 3.5rem;
+            z-index: 30;
+            pointer-events: none;
+            opacity: 0;
+            transform: rotate(-45deg) scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .knife.cutting {
+            opacity: 1;
+            animation: sliceCake 1.5s forwards ease-in-out;
+        }
+
+        @keyframes sliceCake {
+            0% {
+                top: -20px;
+                right: 30%;
+                transform: rotate(-45deg) scale(1);
+            }
+            50% {
+                top: 90px;
+                right: 42%;
+                transform: rotate(-10deg) scale(1.1);
+            }
+            80% {
+                top: 180px;
+                right: 42%;
+                transform: rotate(5deg) scale(1);
+            }
+            100% {
+                top: 220px;
+                right: 45%;
+                opacity: 0;
+                transform: rotate(15deg) scale(0.8);
+            }
+        }
+
+        /* Glowing text effects */
+        .glow-text {
+            text-shadow: 0 0 15px rgba(244, 63, 94, 0.6), 0 0 30px rgba(244, 63, 94, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 5, 29, 0.8);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(244, 63, 94, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(244, 63, 94, 0.7);
+        }
+    </style>
+</head>
+<body class="p-3 md:p-8 relative">
+
+    <div id="heartContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <header class="max-w-5xl mx-auto mb-10 z-10 relative">
+        <div class="glass-panel rounded-3xl p-6 text-center shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-rose-500/20 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl"></div>
+
+            <span class="inline-block px-4 py-1.5 rounded-full bg-rose-500/20 text-rose-300 text-xs md:text-sm font-semibold tracking-widest uppercase mb-3 border border-rose-500/30">
+                <i class="fa-solid fa-sparkles mr-1.5"></i> Celebrations of Love
+            </span>
+
+            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+                Happy Birthday, <span id="displayName" class="font-cursive text-rose-400 glow-text text-5xl md:text-7xl block md:inline mt-1">My Princess</span>!
+            </h1>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto mt-4">
+                <div class="relative w-full">
+                    <i class="fa-solid fa-heart-pulse absolute left-4 top-1/2 -translate-y-1/2 text-rose-400"></i>
+                    <input type="text" id="nameInput" value="My Princess" placeholder="Enter Her Special Name..." 
+                        class="w-full pl-11 pr-4 py-2.5 rounded-full bg-white/10 border border-white/20 text-white placeholder-rose-200/50 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition-all text-center sm:text-left">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto space-y-12 z-10 relative">
+
+        <section class="glass-panel rounded-3xl p-6 md:p-10 shadow-2xl relative">
+            <div class="text-center max-w-2xl mx-auto mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold font-dancing text-rose-300 mb-2">Make a Birthday Wish & Cut the Cake!</h2>
+                <p class="text-xs md:text-sm text-rose-100/70">Blow into your microphone or click the blow button, then slice the cake together to celebrate!</p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center justify-around gap-8">
+                <!-- Interactive 3D/SVG Birthday Cake with Cutting Effect -->
+                <div id="cakeContainer" class="relative flex flex-col items-center justify-center p-6 min-h-[320px] w-full max-w-md">
+                    
+                    <!-- Interactive Animated Knife Overlay -->
+                    <div id="knife" class="knife">🔪</div>
+
+                    <!-- Smoke elements -->
+                    <div id="smoke1" class="smoke"></div>
+                    <div id="smoke2" class="smoke" style="left: 42%;"></div>
+                    <div id="smoke3" class="smoke" style="left: 58%;"></div>
+
+                    <!-- Candle Flames -->
+                    <div id="flame1" class="flame" style="left: calc(50% - 35px); top: 38px;"></div>
+                    <div id="flame2" class="flame" style="left: 50%; top: 22px;"></div>
+                    <div id="flame3" class="flame" style="left: calc(50% + 35px); top: 38px;"></div>
+
+                    <!-- Cake Graphic Split into Two Halves for Slice Animation -->
+                    <svg id="cakeSvg" class="w-72 h-72 cake-shadow overflow-visible" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        
+                        <!-- Cake Stand (Static Base) -->
+                        <g id="cakeStand">
+                            <ellipse cx="150" cy="238" rx="110" ry="18" fill="#e2e8f0" opacity="0.9"/>
+                            <path d="M130 238 L120 260 L180 260 L170 238 Z" fill="#cbd5e1"/>
+                            <ellipse cx="150" cy="260" rx="40" ry="8" fill="#94a3b8"/>
+                        </g>
+
+                        <!-- Left Half of Cake -->
+                        <g class="cake-half-left">
+                            <clipPath id="leftClip">
+                                <rect x="0" y="0" width="150" height="300" />
+                            </clipPath>
+                            <g clip-path="url(#leftClip)">
+                                <!-- Candles Sticks -->
+                                <rect x="112" y="60" width="8" height="40" rx="3" fill="#f472b6"/>
+                                <rect x="146" y="45" width="8" height="55" rx="3" fill="#fb7185"/>
+                                <rect x="180" y="60" width="8" height="40" rx="3" fill="#f472b6"/>
+
+                                <!-- Candle Wicks -->
+                                <path d="M116 55 L116 60" stroke="#333" stroke-width="2"/>
+                                <path d="M150 40 L150 45" stroke="#333" stroke-width="2"/>
+                                <path d="M184 55 L184 60" stroke="#333" stroke-width="2"/>
+
+                                <!-- Cake Top Layer -->
+                                <path d="M70 130 C70 110, 230 110, 230 130 L230 170 C230 190, 70 190, 70 170 Z" fill="#f43f5e"/>
+                                <path d="M70 130 C70 145, 230 145, 230 130" stroke="#ffe4e6" stroke-width="6" stroke-linecap="round"/>
+                                
+                                <!-- Frosting Drips Top -->
+                                <path d="M70 135 Q 85 155, 100 135 Q 115 160, 130 135 Q 145 155, 160 135 Q 175 160, 190 135 Q 205 155, 220 135 Q 230 145, 230 135" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+
+                                <!-- Cake Bottom Layer -->
+                                <path d="M50 170 C50 150, 250 150, 250 170 L250 230 C250 255, 50 255, 50 230 Z" fill="#881337"/>
+                                <path d="M50 170 C50 188, 250 188, 250 170" stroke="#fbcfe8" stroke-width="8" stroke-linecap="round"/>
+
+                                <!-- Decorative Strawberries/Hearts -->
+                                <circle cx="100" cy="125" r="7" fill="#fb7185"/>
+                                <circle cx="150" cy="115" r="8" fill="#fb7185"/>
+                                <circle cx="200" cy="125" r="7" fill="#fb7185"/>
+                            </g>
+                        </g>
+
+                        <!-- Right Half of Cake -->
+                        <g class="cake-half-right">
+                            <clipPath id="rightClip">
+                                <rect x="150" y="0" width="150" height="300" />
+                            </clipPath>
+                            <g clip-path="url(#rightClip)">
+                                <!-- Candles Sticks -->
+                                <rect x="112" y="60" width="8" height="40" rx="3" fill="#f472b6"/>
+                                <rect x="146" y="45" width="8" height="55" rx="3" fill="#fb7185"/>
+                                <rect x="180" y="60" width="8" height="40" rx="3" fill="#f472b6"/>
+
+                                <!-- Candle Wicks -->
+                                <path d="M116 55 L116 60" stroke="#333" stroke-width="2"/>
+                                <path d="M150 40 L150 45" stroke="#333" stroke-width="2"/>
+                                <path d="M184 55 L184 60" stroke="#333" stroke-width="2"/>
+
+                                <!-- Cake Top Layer -->
+                                <path d="M70 130 C70 110, 230 110, 230 130 L230 170 C230 190, 70 190, 70 170 Z" fill="#f43f5e"/>
+                                <path d="M70 130 C70 145, 230 145, 230 130" stroke="#ffe4e6" stroke-width="6" stroke-linecap="round"/>
+                                
+                                <!-- Frosting Drips Top -->
+                                <path d="M70 135 Q 85 155, 100 135 Q 115 160, 130 135 Q 145 155, 160 135 Q 175 160, 190 135 Q 205 155, 220 135 Q 230 145, 230 135" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+
+                                <!-- Cake Bottom Layer -->
+                                <path d="M50 170 C50 150, 250 150, 250 170 L250 230 C250 255, 50 255, 50 230 Z" fill="#881337"/>
+                                <path d="M50 170 C50 188, 250 188, 250 170" stroke="#fbcfe8" stroke-width="8" stroke-linecap="round"/>
+
+                                <!-- Decorative Strawberries/Hearts -->
+                                <circle cx="100" cy="125" r="7" fill="#fb7185"/>
+                                <circle cx="150" cy="115" r="8" fill="#fb7185"/>
+                                <circle cx="200" cy="125" r="7" fill="#fb7185"/>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Controls & Mic Feedback -->
+                <div class="flex flex-col items-center lg:items-start gap-4 max-w-sm w-full">
+                    <div class="w-full glass-card p-5 rounded-2xl border border-rose-500/20 text-center lg:text-left">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-rose-300 uppercase tracking-wider">Blow Sensor (Mic)</span>
+                            <span id="micStatus" class="text-xs px-2.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">Idle</span>
+                        </div>
+                        <div class="w-full bg-black/40 rounded-full h-3 overflow-hidden p-0.5 border border-white/10 mb-2">
+                            <div id="micMeter" class="bg-gradient-to-r from-emerald-400 via-amber-300 to-rose-500 h-full rounded-full w-0 transition-all duration-75"></div>
+                        </div>
+                        <p class="text-xs text-rose-200/60">Allow microphone access and blow strongly into your mic to extinguish the candles!</p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 w-full">
+                        <button id="enableMicBtn" class="flex-1 py-3 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold text-xs md:text-sm transition-all shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-microphone"></i> Enable Mic
+                        </button>
+                        <button id="blowBtn" class="flex-1 py-3 px-4 rounded-xl bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold text-xs md:text-sm transition-all shadow-lg shadow-purple-600/30 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wind"></i> Blow Candles
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 w-full">
+                        <button id="cutCakeBtn" class="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 active:scale-95 text-gray-900 font-bold text-xs md:text-sm transition-all shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-utensils"></i> Cut Cake 🔪
+                        </button>
+                        <button id="reigniteBtn" class="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-rose-200 font-medium text-xs md:text-sm transition-all border border-white/10 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-rotate-left text-amber-400"></i> Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-panel rounded-3xl p-6 md:p-10 shadow-2xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold font-dancing text-rose-300">Our Favorite Memory</h2>
+                    <p class="text-xs md:text-sm text-rose-100/70">A timeless moment captured forever in my heart.</p>
+                </div>
+                <!-- Custom upload & URL Controls -->
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <label class="cursor-pointer py-2 px-4 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/30 text-xs font-semibold transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-upload"></i> Upload Photo
+                        <input type="file" id="photoUpload" accept="image/*" class="hidden">
+                    </label>
+                    <button id="setUrlBtn" class="py-2 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-rose-200 border border-white/10 text-xs font-semibold transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-link"></i> Image URL
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Main Polaroid Frame with Updated Image -->
+                <div class="lg:col-span-7 flex justify-center">
+                    <div class="bg-white p-4 pb-12 rounded-2xl shadow-2xl transform hover:rotate-1 transition-transform duration-300 max-w-md w-full relative group">
+                        <div class="overflow-hidden rounded-lg aspect-[4/3] bg-rose-50 relative">
+                            <img id="memoryImage" src="us.png" alt="Our Favorite Memory" 
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80';">
+                        </div>
+                        <p id="memoryCaption" class="font-dancing text-gray-800 text-2xl text-center mt-4">Together is my favorite place to be ❤️</p>
+                        <div class="absolute bottom-3 right-4 text-xs font-cursive text-gray-400">Forever & Always</div>
+                    </div>
+                </div>
+
+                <!-- Custom Caption & Love Note Details -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="glass-card p-6 rounded-2xl border border-rose-500/20">
+                        <h3 class="text-lg font-bold text-rose-300 mb-2"><i class="fa-solid fa-quote-left mr-2"></i>Why This Moment Is Special</h3>
+                        <p class="text-xs md:text-sm text-rose-100/80 leading-relaxed italic mb-4">
+                            "Every second spent with you feels like a beautiful dream come true. Look at how bright your smile shines here—it brightens up my whole world."
+                        </p>
+                        <div class="space-y-3">
+                            <label class="block text-xs font-semibold text-rose-300 uppercase">Update Memory Caption</label>
+                            <input type="text" id="captionInput" placeholder="Write a cute caption..." 
+                                class="w-full px-4 py-2 rounded-xl bg-black/30 border border-white/10 text-white text-xs focus:outline-none focus:ring-1 focus:ring-rose-500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-panel rounded-3xl p-6 md:p-10 shadow-2xl">
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold font-dancing text-rose-300 mb-2">Reasons Why I Love You</h2>
+                <p class="text-xs md:text-sm text-rose-100/70">Pick a love coupon from the magic jar to reveal a secret reason!</p>
+            </div>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                <!-- Interactive Love Jar Graphics -->
+                <div id="loveJar" class="relative cursor-pointer group p-4">
+                    <div class="w-48 h-64 border-4 border-white/40 rounded-b-3xl rounded-t-xl bg-white/10 backdrop-blur-md relative overflow-hidden flex flex-col items-center justify-end p-3 shadow-2xl group-hover:border-rose-400 transition-all">
+                        <!-- Jar Lid -->
+                        <div class="absolute top-0 w-36 h-6 bg-rose-500/60 rounded-t-md border-b border-white/30"></div>
+                        <div class="absolute top-6 w-40 h-2 bg-white/30 rounded-full"></div>
+                        
+                        <!-- Floating Notes Inside Jar -->
+                        <div class="w-full h-44 relative flex flex-wrap gap-2 justify-center items-end pb-2">
+                            <div class="w-10 h-8 bg-pink-400/80 rounded-md rotate-12 shadow-md animate-bounce" style="animation-delay: 0.1s;"></div>
+                            <div class="w-8 h-8 bg-rose-400/80 rounded-md -rotate-12 shadow-md animate-bounce" style="animation-delay: 0.3s;"></div>
+                            <div class="w-12 h-7 bg-purple-400/80 rounded-md rotate-45 shadow-md animate-bounce" style="animation-delay: 0.5s;"></div>
+                            <div class="w-9 h-8 bg-red-400/80 rounded-md -rotate-6 shadow-md animate-bounce" style="animation-delay: 0.2s;"></div>
+                        </div>
+
+                        <span class="absolute text-xs font-bold text-rose-200 tracking-wider uppercase bg-black/40 px-3 py-1 rounded-full border border-white/20">Tap Jar ❤️</span>
+                    </div>
+                </div>
+
+                <!-- Displayed Love Note Card -->
+                <div class="max-w-md w-full">
+                    <div id="noteCard" class="glass-card p-6 rounded-2xl border border-rose-500/30 text-center min-h-[180px] flex flex-col items-center justify-center relative overflow-hidden transition-all transform">
+                        <i class="fa-solid fa-heart text-4xl text-rose-500/20 absolute -right-2 -bottom-2"></i>
+                        <p id="noteText" class="font-dancing text-2xl md:text-3xl text-rose-200 mb-4">"Click the jar to pick a romantic love note..."</p>
+                        <button id="drawNoteBtn" class="py-2.5 px-6 rounded-full bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold text-xs tracking-wider uppercase shadow-lg shadow-rose-600/30 transition-all">
+                            Draw Love Coupon
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-panel rounded-3xl p-6 md:p-10 shadow-2xl">
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <h2 class="text-3xl md:text-4xl font-bold font-dancing text-rose-300 mb-2">My Heartfelt Letter To You</h2>
+                <p class="text-xs md:text-sm text-rose-100/70">Click the envelope below to open your personalized birthday love letter.</p>
+            </div>
+
+            <div class="flex justify-center perspective-1000 my-4">
+                <div id="flipCard" class="w-full max-w-lg min-h-[380px] relative transform-style-3d cursor-pointer">
+                    <!-- Front Side (Envelope Style) -->
+                    <div class="absolute inset-0 w-full h-full glass-card rounded-2xl p-8 border border-rose-500/40 flex flex-col items-center justify-center text-center backface-hidden shadow-2xl bg-gradient-to-br from-rose-900/40 to-purple-900/40">
+                        <div class="w-20 h-20 rounded-full bg-rose-500/20 border border-rose-400/40 flex items-center justify-center mb-4 text-rose-300 text-3xl animate-pulse">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-rose-200 mb-1">To My Dearest <span class="letterName text-rose-400 font-dancing text-3xl">My Princess</span></h3>
+                        <p class="text-xs text-rose-100/60 mb-6">Sealed with eternal love & hugs</p>
+                        <span class="py-2 px-5 rounded-full bg-rose-600 text-white font-semibold text-xs uppercase tracking-wider shadow-lg">Click to Flip & Read</span>
+                    </div>
+
+                    <!-- Back Side (Letter Content) -->
+                    <div class="absolute inset-0 w-full h-full bg-amber-50 text-gray-800 rounded-2xl p-6 md:p-8 border-2 border-amber-200/60 rotate-y-180 backface-hidden shadow-2xl overflow-y-auto">
+                        <div class="font-dancing text-2xl md:text-3xl text-rose-800 font-bold mb-3 border-b border-rose-200 pb-2">
+                            Dearest <span class="letterName">My Princess</span>,
+                        </div>
+                        <p class="text-xs md:text-sm font-sans leading-relaxed text-gray-700 mb-3">
+                            On this special day, I want to remind you of how deeply loved and cherished you are. You bring so much warm sunshine, laughter, and magical peace into my world.
+                        </p>
+                        <p class="text-xs md:text-sm font-sans leading-relaxed text-gray-700 mb-4">
+                            Every single moment with you is a priceless gift. Thank you for being my soulmate, my best friend, and my greatest adventure. May your year ahead be as breathtaking and lovely as you are.
+                        </p>
+                        <div class="text-right font-dancing text-2xl text-rose-700 font-bold">
+                            Yours Forever & Always ❤️
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-panel rounded-3xl p-6 md:p-10 shadow-2xl">
+            <div class="text-center max-w-xl mx-auto mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold font-dancing text-rose-300 mb-2">Our Love Story Timeline</h2>
+                <p class="text-xs md:text-sm text-rose-100/70">A beautiful journey through our sweet milestone moments.</p>
+            </div>
+
+            <div class="relative border-l-2 border-rose-500/30 ml-4 md:ml-32 space-y-8">
+                <!-- Timeline Item 1 -->
+                <div class="relative pl-6 md:pl-8 group">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-rose-500 border-4 border-slate-900 group-hover:scale-125 transition-transform"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-semibold text-rose-300 bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20 inline-block mb-2 md:mb-0">
+                        The Day We Met
+                    </span>
+                    <div class="glass-card p-5 rounded-2xl border border-rose-500/20">
+                        <h4 class="font-bold text-rose-200 text-sm md:text-base mb-1">When Sparks Flew ✨</h4>
+                        <p class="text-xs text-rose-100/70">The unforgettable moment our eyes first met, and my world instantly changed forever.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="relative pl-6 md:pl-8 group">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-purple-500 border-4 border-slate-900 group-hover:scale-125 transition-transform"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-semibold text-rose-300 bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20 inline-block mb-2 md:mb-0">
+                        Our First Date
+                    </span>
+                    <div class="glass-card p-5 rounded-2xl border border-rose-500/20">
+                        <h4 class="font-bold text-rose-200 text-sm md:text-base mb-1">Nervous Smiles & Endless Conversations ☕</h4>
+                        <p class="text-xs text-rose-100/70">Hours felt like minutes as we talked, laughed, and discovered we were meant to be.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="relative pl-6 md:pl-8 group">
+                    <div class="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-pink-500 border-4 border-slate-900 group-hover:scale-125 transition-transform"></div>
+                    <span class="md:absolute md:-left-32 md:top-1 text-xs font-semibold text-rose-300 bg-rose-500/10 px-3 py-1 rounded-full border border-rose-500/20 inline-block mb-2 md:mb-0">
+                        Today & Beyond
+                    </span>
+                    <div class="glass-card p-5 rounded-2xl border border-rose-500/20">
+                        <h4 class="font-bold text-rose-200 text-sm md:text-base mb-1">Celebrating Your Special Birthday 🎂</h4>
+                        <p class="text-xs text-rose-100/70">Looking forward to building a lifetime of memories together. Happy Birthday, my soulmate!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- <section class="glass-panel rounded-3xl p-6 shadow-2xl text-center">
+            <h3 class="text-lg font-bold text-rose-300 mb-3"><i class="fa-solid fa-music mr-2"></i>MY NOTE</h3>
+                   <audio id="bgMusic" loop>
+    <source src="New Recording 2.m4a" type="audio/mpeg">
+</audio>
+      
+        </section> -->
+
+  <!-- Say's Note Audio Section -->
+        <section class="glass-panel rounded-3xl p-6 shadow-2xl text-center">
+            <h3 class="text-lg font-bold text-rose-300 mb-3"><i class="fa-solid fa-microphone-lines mr-2"></i>Say's Note</h3>
+            <div class="flex items-center justify-center gap-3 max-w-sm mx-auto">
+                <button id="playAudioBtn" class="w-full py-3 px-6 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-lg shadow-purple-600/30">
+                    <i class="fa-solid fa-play" id="audioIcon"></i> Play Say's Note 🎵
+                </button>
+            </div>
+            <!-- Replace 'my-audio.mp3' with your actual audio filename -->
+            <audio id="bgAudio" src="note.mp3"></audio>
+        </section>
+
+</script>
+    </main>
+
+    <div id="urlModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel p-6 rounded-2xl max-w-md w-full space-y-4 border border-white/20">
+            <h3 class="text-lg font-bold text-rose-300">Set Memory Photo URL</h3>
+            <input type="url" id="imageUrlInput" placeholder="https://example.com/photo.jpg" 
+                class="w-full px-4 py-2.5 rounded-xl bg-black/40 border border-white/20 text-white text-xs focus:outline-none focus:ring-2 focus:ring-rose-500">
+            <div class="flex justify-end gap-2">
+                <button id="cancelUrlBtn" class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-xs text-rose-200">Cancel</button>
+                <button id="confirmUrlBtn" class="px-4 py-2 rounded-lg bg-rose-₹600 hover:bg-rose-500 text-xs text-white font-semibold">Apply Image</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Dynamic Name Editing Logic ---
+        const nameInput = document.getElementById('nameInput');
+        const displayName = document.getElementById('displayName');
+        const letterNames = document.querySelectorAll('.letterName');
+
+        nameInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim() || "My Princess";
+            displayName.textContent = val;
+            letterNames.forEach(el => el.textContent = val);
+        });
+
+        // --- 2. Floating Heart Particles ---
+        function createHeart() {
+            const container = document.getElementById('heartContainer');
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            
+            const icons = ['fa-heart', 'fa-sparkles', 'fa-heart-pulse'];
+            const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+            
+            heart.innerHTML = `<i class="fa-solid ${randomIcon} text-rose-400/60 text-${Math.floor(Math.random() * 20 + 12)}px"></i>`;
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), 8000);
+        }
+        setInterval(createHeart, 450);
+
+        // --- 3. Microphone, Candle Blowing & Cake Cutting Logic ---
+        const flames = [document.getElementById('flame1'), document.getElementById('flame2'), document.getElementById('flame3')];
+        const smokes = [document.getElementById('smoke1'), document.getElementById('smoke2'), document.getElementById('smoke3')];
+        const micMeter = document.getElementById('micMeter');
+        const micStatus = document.getElementById('micStatus');
+        const knife = document.getElementById('knife');
+        const cakeSvg = document.getElementById('cakeSvg');
+        
+        let audioContext, analyser, microphone, stream;
+        let isBlown = false;
+        let isCut = false;
+
+        async function initMicrophone() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                analyser.fftSize = 256;
+                
+                micStatus.textContent = "Listening...";
+                micStatus.className = "text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                listenForBlow();
+            } catch (err) {
+                micStatus.textContent = "Mic Denied";
+                micStatus.className = "text-xs px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            }
+        }
+
+        function listenForBlow() {
+            if (isBlown || !analyser) return;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            let sum = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                sum += dataArray[i];
+            }
+            let average = sum / bufferLength;
+            micMeter.style.width = Math.min(100, (average * 2.5)) + '%';
+
+            if (average > 38) { // Blow threshold
+                extinguishCandles();
+            } else {
+                requestAnimationFrame(listenForBlow);
+            }
+        }
+
+        function extinguishCandles() {
+            if (isBlown) return;
+            isBlown = true;
+            flames.forEach(f => f.style.display = 'none');
+            smokes.forEach(s => {
+                s.classList.add('active');
+                setTimeout(() => s.classList.remove('active'), 1800);
+            });
+
+            micStatus.textContent = "Blown Out!";
+            micStatus.className = "text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30";
+
+            // Trigger Confetti & Celebration Music
+            triggerConfetti();
+            playSynthCelebration();
+        }
+
+        // Cake Cutting Animation
+        function cutCake() {
+            if (isCut) return;
+            isCut = true;
+
+            // Blow candles if not blown yet
+            if (!isBlown) {
+                extinguishCandles();
+            }
+
+            // Animate knife
+            knife.classList.add('cutting');
+
+            // Split cake halves after knife cuts down
+            setTimeout(() => {
+                cakeSvg.classList.add('cake-cut');
+                triggerConfetti();
+                micStatus.textContent = "Cake Cut! 🎉";
+                micStatus.className = "text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            }, 700);
+
+            setTimeout(() => {
+                knife.classList.remove('cutting');
+            }, 1600);
+        }
+
+        function resetCake() {
+            isBlown = false;
+            isCut = false;
+            cakeSvg.classList.remove('cake-cut');
+            knife.classList.remove('cutting');
+            flames.forEach(f => f.style.display = 'block');
+            micMeter.style.width = '0%';
+            
+            if (analyser) {
+                micStatus.textContent = "Listening...";
+                micStatus.className = "text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                listenForBlow();
+            } else {
+                micStatus.textContent = "Idle";
+                micStatus.className = "text-xs px-2.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-500/30";
+            }
+        }
+
+        document.getElementById('enableMicBtn').addEventListener('click', initMicrophone);
+        document.getElementById('blowBtn').addEventListener('click', extinguishCandles);
+        document.getElementById('cutCakeBtn').addEventListener('click', cutCake);
+        document.getElementById('reigniteBtn').addEventListener('click', resetCake);
+
+        // --- 4. Confetti Effect ---
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // --- 5. Memory Photo & Upload Handlers ---
+        const photoUpload = document.getElementById('photoUpload');
+        const memoryImage = document.getElementById('memoryImage');
+        const captionInput = document.getElementById('captionInput');
+        const memoryCaption = document.getElementById('memoryCaption');
+
+        photoUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    memoryImage.src = evt.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        captionInput.addEventListener('input', (e) => {
+            memoryCaption.textContent = e.target.value.trim() || "Together is my favorite place to be ❤️";
+        });
+
+        // URL Modal logic
+        const urlModal = document.getElementById('urlModal');
+        document.getElementById('setUrlBtn').addEventListener('click', () => urlModal.classList.remove('hidden'));
+        document.getElementById('cancelUrlBtn').addEventListener('click', () => urlModal.classList.add('hidden'));
+        document.getElementById('confirmUrlBtn').addEventListener('click', () => {
+            const url = document.getElementById('imageUrlInput').value.trim();
+            if (url) memoryImage.src = url;
+            urlModal.classList.add('hidden');
+        });
+
+        // --- 6. Reasons Why I Love You Jar Logic ---
+        const loveReasons = [
+            "Your infectious smile instantly brightens up my darkest days.",
+            "The comforting way you hold my hand when we walk together.",
+            "How deeply compassionate and caring you are to everyone around you.",
+            "Your hilarious laugh that I can never get enough of.",
+            "The way you look at me like I am your entire world.",
+            "Your beautiful heart and unmatched kindness.",
+            "How we can talk for hours without ever running out of things to say."
+        ];
+
+        const noteText = document.getElementById('noteText');
+        const noteCard = document.getElementById('noteCard');
+        
+        function drawLoveNote() {
+            noteCard.classList.add('scale-95', 'opacity-50');
+            setTimeout(() => {
+                const randomReason = loveReasons[Math.floor(Math.random() * loveReasons.length)];
+                noteText.textContent = `"${randomReason}"`;
+                noteCard.classList.remove('scale-95', 'opacity-50');
+            }, 200);
+        }
+
+        document.getElementById('loveJar').addEventListener('click', drawLoveNote);
+        document.getElementById('drawNoteBtn').addEventListener('click', drawLoveNote);
+
+        // --- 7. 3D Card Flip Logic ---
+        const flipCard = document.getElementById('flipCard');
+        flipCard.addEventListener('click', () => {
+            flipCard.classList.toggle('rotate-y-180');
+        });
+
+        // --- 8. Synthesized Celebration Music Audio ---
+        function playSynthCelebration() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [261.63, 261.63, 293.66, 261.63, 349.23, 329.63]; // Happy birthday tune notes
+                let delay = 0;
+
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + delay);
+                    osc.stop(ctx.currentTime + delay + 0.5);
+                    delay += 0.35;
+                });
+            } catch(e) {}
+        }
+
+        // Background Audio Custom File Logic
+        const bgAudio = document.getElementById('bgAudio');
+        const bgMusicUpload = document.getElementById('bgMusicUpload');
+        const musicUploadBtn = document.getElementById('musicUploadBtn');
+        const synthMusicBtn = document.getElementById('synthMusicBtn');
+        const synthIcon = document.getElementById('synthIcon');
+
+        musicUploadBtn.addEventListener('click', () => bgMusicUpload.click());
+        bgMusicUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                bgAudio.src = URL.createObjectURL(file);
+                bgAudio.play();
+                synthIcon.className = "fa-solid fa-pause";
+            }
+        });
+
+        synthMusicBtn.addEventListener('click', () => {
+            if (bgAudio.src) {
+                if (bgAudio.paused) {
+                    bgAudio.play();
+                    synthIcon.className = "fa-solid fa-pause";
+                } else {
+                    bgAudio.pause();
+                    synthIcon.className = "fa-solid fa-play";
+                }
+            } else {
+                playSynthCelebration();
+            }
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Happy Birthday My Love!</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+
+<script>
+
+tailwind.config = {
+
+theme: {
+
+extend: {
+
+colors: {
+
+rose: {
+
+50: '#fff1f2',
+
+100: '#ffe4e6',
+
+300: '#fca5a5',
+
+500: '#f43f5e',
+
+600: '#e11d48',
+
+800: '#9f1239',
+
+},
+
+amber: {
+
+300: '#fcd34d',
+
+400: '#fbbf24',
+
+}
+
+},
+
+fontFamily: {
+
+cursive: ['"Great Vibes"', 'cursive'],
+
+dancing: ['"Dancing Script"', 'cursive'],
+
+sans: ['"Poppins"', 'sans-serif'],
+
+}
+
+}
+
+}
+
+}
+
+</script>
+
+
+
+<style>
+
+body {
+
+background: linear-gradient(135deg, #0f051d 0%, #2a0826 35%, #1a0b2e 70%, #0d0414 100%);
+
+color: #fce7f3;
+
+min-height: 100vh;
+
+overflow-x: hidden;
+
+font-family: 'Poppins', sans-serif;
+
+}
+
+
+
+/* Glassmorphism effects */
+
+.glass-panel {
+
+background: rgba(255, 255, 255, 0.05);
+
+backdrop-filter: blur(16px);
+
+-webkit-backdrop-filter: blur(16px);
+
+border: 1px solid rgba(255, 255, 255, 0.12);
+
+box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+
+}
+
+
+
+.glass-card {
+
+background: rgba(255, 255, 255, 0.08);
+
+backdrop-filter: blur(12px);
+
+border: 1px solid rgba(255, 255, 255, 0.18);
+
+}
+
+
+
+/* 3D Card Flip */
+
+.perspective-1000 {
+
+perspective: 1000px;
+
+}
+
+.transform-style-3d {
+
+transform-style: preserve-3d;
+
+transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+}
+
+.backface-hidden {
+
+backface-visibility: hidden;
+
+-webkit-backface-visibility: hidden;
+
+}
+
+.rotate-y-180 {
+
+transform: rotateY(180deg);
+
+}
+
+
+
+/* Floating Hearts Animation Background */
+
+.heart-particle {
+
+position: fixed;
+
+bottom: -50px;
+
+pointer-events: none;
+
+z-index: 1;
+
+animation: floatUp 8s linear infinite;
+
+}
+
+
+
+@keyframes floatUp {
+
+0% {
+
+transform: translateY(0) rotate(0deg) scale(0.8);
+
+opacity: 0;
+
+}
+
+20% { opacity: 0.8; }
+
+100% {
+
+transform: translateY(-115vh) rotate(360deg) scale(1.3);
+
+opacity: 0;
+
+}
+
+}
+
+
+
+/* Candle Flame and Smoke Effects */
+
+.flame {
+
+width: 14px;
+
+height: 28px;
+
+background: linear-gradient(to top, #ff4500, #ff8c00, #ffd700, #ffffff);
+
+border-radius: 50% 50% 35% 35%;
+
+position: absolute;
+
+top: -26px;
+
+left: 50%;
+
+transform: translateX(-50%);
+
+filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.9));
+
+animation: flicker 0.12s infinite alternate ease-in-out;
+
+transform-origin: center bottom;
+
+}
+
+
+
+@keyframes flicker {
+
+0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+
+100% { transform: translateX(-50%) scale(1.1, 0.95) rotate(2deg); }
+
+}
+
+
+
+.smoke {
+
+position: absolute;
+
+top: -28px;
+
+left: 50%;
+
+width: 8px;
+
+height: 8px;
+
+background: rgba(200, 200, 200, 0.6);
+
+border-radius: 50%;
+
+pointer-events: none;
+
+opacity: 0;
+
+}
+
+
+
+.smoke.active {
+
+animation: riseSmoke 1.8s ease-out forwards;
+
+}
+
+
+
+@keyframes riseSmoke {
+
+0% { opacity: 0.8; transform: translate(-50%, 0) scale(1); filter: blur(2px); }
+
+50% { opacity: 0.5; filter: blur(6px); }
+
+100% { opacity: 0; transform: translate(-50%, -60px) scale(3.5); filter: blur(10px); }
+
+}
+
+
+
+/* Cake SVG & Cutting Animation Styling */
+
+.cake-shadow {
+
+filter: drop-shadow(0 15px 25px rgba(225, 29, 72, 0.3));
+
+}
+
+
+
+.cake-half-left, .cake-half-right {
+
+transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+
+}
+
+
+
+.cake-cut .cake-half-left {
+
+transform: translateX(-12px) rotate(-1.5deg);
+
+}
+
+
+
+.cake-cut .cake-half-right {
+
+transform: translateX(12px) rotate(1.5deg);
+
+}
+
+
+
+.knife {
+
+position: absolute;
+
+top: -40px;
+
+right: 20%;
+
+font-size: 3.5rem;
+
+z-index: 30;
+
+pointer-events: none;
+
+opacity: 0;
+
+transform: rotate(-45deg) scale(0.8);
+
+transition: all 0.5s ease;
+
+}
+
+
+
+.knife.cutting {
+
+opacity: 1;
+
+animation: sliceCake 1.5s forwards ease-in-out;
+
+}
+
+
+
+@keyframes sliceCake {
+
+0% {
+
+top: -20px;
+
+right: 30%;
+
+transform: rotate(-45deg) scale(1);
+
+}
+
+50% {
+
+top: 90px;
+
+right: 42%;
+
+transform: rotate(-10deg) scale(1.1);
+
+}
+
+80% {
+
+top: 180px;
+
+right: 42%;
+
+transform: rotate(5deg) scale(1);
+
+}
+
+100% {
+
+top: 220px;
+
+right: 45%;
+
+opacity: 0;
+
+transform: rotate(15deg) scale(0.8);
+
+}
+
+}
+
+
+
+/* Glowing text effects */
+
+.glow-text {
+
+text-shadow: 0 0 15px rgba(244, 63, 94, 0.6), 0 0 30px rgba(244, 63, 94, 0.3);
+
+}
+
+
+
+/* Custom Scrollbar */
+
+::-webkit-scrollbar {
+
+width: 8px;
+
+}
+
+::-webkit-scrollbar-track {
+
+background: rgba(15, 5, 29, 0.8);
+
+}
+
+::-webkit-scrollbar-thumb {
+
+background: rgba(244, 63, 94, 0.4);
+
+border-radius: 4px;
+
+}
+
+::-webkit-scrollbar-thumb:hover {
+
+background: rgba(244, 63, 94, 0.7);
+
+}
+
+
+
+</style>
+
+</head>
+
+<body class="p-3 md:p-8 relative">
+
+
+
+<div id="heartContainer" class="fixed inset-0 pointer-events-none z-0"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+             
+    </script>
+</body>
+</html>
+
+
+
+
+
